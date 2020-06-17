@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { Map, TileLayer, Marker } from "react-leaflet";
 import { FiArrowLeft } from "react-icons/fi";
 
+import api from "../../services/api";
+
 import "./styles.css";
 import logo from "../../assets/logo.svg";
 
+interface Items {
+  id: number;
+  title: string;
+  image_url: string;
+}
+
 const CreatePoint = () => {
+  const [items, setItems] = useState<Items[]>([]);
+  useEffect(() => {
+    api.get("items").then((response) => {
+      setItems(response.data);
+    });
+  }, []);
   return (
     <div id="page-create-point">
       <header>
@@ -80,25 +94,12 @@ const CreatePoint = () => {
           </legend>
 
           <ul className="items-grid">
-            <li className="selected">
-              <img src="" alt="" />
-              <span>Oléo de cozinha</span>
-            </li>
-            <li>
-              <span>Oléo de cozinha</span>
-            </li>
-            <li>
-              <span>Oléo de cozinha</span>
-            </li>
-            <li>
-              <span>Oléo de cozinha</span>
-            </li>
-            <li>
-              <span>Oléo de cozinha</span>
-            </li>
-            <li className="selected">
-              <span>Oléo de cozinha</span>
-            </li>
+            {items.map((item) => (
+              <li className="selected" key={item.id}>
+                <img src={item.image_url} alt="" />
+                <span>{item.title}</span>
+              </li>
+            ))}
           </ul>
         </fieldset>
 
